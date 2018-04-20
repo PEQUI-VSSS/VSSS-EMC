@@ -65,6 +65,8 @@ class Strategy {
 
 		std::vector<Robot> robots;
 		cv::Point *adv;
+		std::vector<Robot> robots_ini;
+		cv::Point *adv_ini;
 		int collision_count[3];
 		double past_transangle[3];
 		cv::Point past_position[3];
@@ -94,7 +96,10 @@ class Strategy {
 
 		//univector field
 		double kr;
+		double kz;
 		double de;
+		double dmin;
+		double delta;
 		double ticks;
 
 /*

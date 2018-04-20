@@ -40,8 +40,8 @@ void CamCap::updateKalmanFilter() {
 		}
 		KF_FIRST = false;
 	}
-	robot_kf_est_ini = robot_kf_est;
-	Ball_kf_est_ini = Ball_kf_est;
+	//robot_kf_est_ini = robot_kf_est;
+	//Ball_kf_est_ini = Ball_kf_est;
 	robot_kf_est[0] = KF_Robot[0].KF_Prediction(interface.visionGUI.vision->getRobotPos(0));
 	robot_kf_est[1] = KF_Robot[1].KF_Prediction(interface.visionGUI.vision->getRobotPos(1));
 	robot_kf_est[2] = KF_Robot[2].KF_Prediction(interface.visionGUI.vision->getRobotPos(2));

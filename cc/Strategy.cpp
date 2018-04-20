@@ -72,11 +72,17 @@ void Strategy::get_past(int i) {
 }
 
 void Strategy::get_targets(vector<Robot> *pRobots, cv::Point *advRobots) {
+	if(!robots.empty()) {
+		robots_ini = robots;
+		adv_ini = advRobots;
+		cout<<"velocidade: " <<speed_vector(robots_ini[1].position,(*pRobots)[1].position)<<endl;
 
+	}
 	robots = *pRobots;
 	adv = advRobots;
 
 	get_variables();
+
 
 	for (int i = 0; i < 3; i++) { //pegar posições e índices
 		robots[i].cmdType = VECTOR;
@@ -1134,80 +1140,85 @@ void Strategy::set_Ball(cv::Point b) {
 	Ball_Est.y = static_cast<int>(LS_ball_y.estimate(10));
 }
 
-//double Strategy::hyperbolic_field(int i, cv::Point P, bool clockwise){ //de = raio do espiral , p distancia da origem ate o ponteiro
-//	double hb_field;
-//	double p = distance_meters(robots[i].position, P);
-//	if (p>de){
-//		if(clockwise)
-//		hb_field = theta + ((PI/2)*(2-(de+kr	)/(p+kr)));
-//		else
-//		hb_field = theta - ((PI/2)*(2-(de+kr	)/(p+kr)));
-//	}else{
-//		if(clockwise)
-//		hb_field = theta + ((PI/2)*sqrt(p/de));
-//		else
-//		hb_field = theta - ((PI/2)*sqrt(p/de));
-//	}
-//	return hb_field;
-//}
+double Strategy::hyperbolic_field(int i, cv::Point P, bool clockwise){ //de = raio do espiral , p distancia da origem ate o ponteiro
+	double hb_field;
+	double p = distance_meters(robots[i].position, P);
+	double theta = atan2((double)P.y,(double)P.x);
+	if (p>de){
+		if(clockwise)
+		hb_field = theta + ((PI/2)*(2-(de+kr	)/(p+kr)));
+		else
+		hb_field = theta - ((PI/2)*(2-(de+kr	)/(p+kr)));
+	}else{
+		if(clockwise)
+		hb_field = theta + ((PI/2)*sqrt(p/de));
+		else
+		hb_field = theta - ((PI/2)*sqrt(p/de));
+	}
+	return hb_field;
+}
 
-//double Strategy::move_to_goal_field(int i, cv::Point P){
-//	double theta_pr_cw = hyperbolic_field(i, cv::Point(P.x, P.y + de), true);
-//	double theta_pl_ccw = hyperbolic_field(i, cv::Point(P.x, P.y - de), false);
-//	double theta_pr_ccw = hyperbolic_field(i, cv::Point(P.x, P.y + de), false);
-//	double theta_pl_cw = hyperbolic_field(i, cv::Point(P.x, P.y - de), true);
-//
-//	cv::Point Nl = cv::Point(cos(theta_pl_ccw), sin(theta_pl_ccw));
-//	cv::Point Nr = cv::Point(cos(theta_pr_cw), sin(theta_pr_cw));
-//
-//	double phi;
-//
-//	if(-de<= P.y && y<de){
-//		cv::Point aux = (((P.y+de)*Nl)+((P.y-de)*Nr))/(2*de);
-//		phi = atan2(aux.x, aux.y);
-//	}else if(P.y < -de){
-//		phi = theta_pl_cw;
-//	}else if (y>= de) {
-//		phi = theta_pr_ccw;
-//	}
-//	return phi;
-//}
+double Strategy::move_to_goal_field(int i, cv::Point P){
+	double theta_pr_cw = hyperbolic_field(i, cv::Point(P.x, P.y + de), true);
+	double theta_pl_ccw = hyperbolic_field(i, cv::Point(P.x, P.y - de), false);
+	double theta_pr_ccw = hyperbolic_field(i, cv::Point(P.x, P.y + de), false);
+	double theta_pl_cw = hyperbolic_field(i, cv::Point(P.x, P.y - de), true);
 
-//double Strategy::avoid_field(int i,cv::Point Obs,cv::Point Vrobo,cv::Point Vobs ){
-//	cv::Point s = kz*(Vobs - Vrobo);
-//	double d = distance_meters(robots[i].position, Obs);
-//	cv::Point Pelinha;
-//	if (d>= sqrt(pow(s.x,2)+pow(s.y,2))){
-//		 Pelinha = Obs+s;
-//	}else if (d< sqrt(pow(s.x,2)+pow(s.y,2))){
-//		Pelinha = Obs+((d/sqrt(pow(s.x,2)+pow(s.y,2)))*s);
-//	}
-//
-//	double theta_avoid = angle_atan2(robots[i].position, Obs-Pelinha);
-//}
-//
-//double Strategy::composed_field(int i,cv::Point P){
-//	for(int j = 0; j<3;j++){
-//		double theta;
-//		double R = distance_meters(adv[j],robots[i].position);
-//		if(R<=dmin){
-//			theta=avoid_field(i,adv[j],Vrobo,Vobs);
-//		}else if(R>dmin){
-//			double gaussiana= exp(-pow(R-Dmin,2)/(2*delta));
-//			theta = (avoid_field(i,adv[j],Vrobo,Vobs)*gaussiana)+(move_to_goal_field(i,P)*(1-gaussiana));
-//		}
-//	}
-//
-//}
-//
-//cv::Point Strategy::speed_vector(cv::Point P_ini, cv::Point P_final){
-//	double precTick = ticks;
-//	ticks = (double) cv::getTickCount();
-//	double dT = (ticks - precTick) / cv::getTickFrequency(); //seconds
-//	double dx = P_final.x - P_ini.x;
-//	double dy = P_final.y - P_ini.y;
-//	cv::Point vel;
-//	vel.x = dx/dT;
-//	vel.y = dy/dT;
-//	return vel;
-//}
+	cv::Point Nl = cv::Point(cos(theta_pl_ccw), sin(theta_pl_ccw));
+	cv::Point Nr = cv::Point(cos(theta_pr_cw), sin(theta_pr_cw));
+
+	double phi;
+
+	if(-de<= P.y && P.y<de){
+		cv::Point aux = (((P.y+de)*Nl)+((P.y-de)*Nr))/(2*de);
+		phi = atan2(aux.x, aux.y);
+	}else if(P.y < -de){
+		phi = theta_pl_cw;
+	}else if (P.y>= de) {
+		phi = theta_pr_ccw;
+	}
+	return phi;
+}
+
+double Strategy::avoid_field(int i,cv::Point Obs,cv::Point Vrobo,cv::Point Vobs ){
+	cv::Point s = kz*(Vobs - Vrobo);
+	double d = distance_meters(robots[i].position, Obs);
+	cv::Point Pelinha;
+	if (d>= sqrt(pow(s.x,2)+pow(s.y,2))){
+		 Pelinha = Obs+s;
+	}else if (d< sqrt(pow(s.x,2)+pow(s.y,2))){
+		Pelinha = Obs+((d/sqrt(pow(s.x,2)+pow(s.y,2)))*s);
+	}
+
+	double theta_avoid = angle_atan2(robots[i].position, Obs-Pelinha);
+}
+
+double Strategy::composed_field(int i,cv::Point P){
+	for(int j = 0; j<3;j++){
+		double theta;
+		double R = distance_meters(adv[j],robots[i].position);
+		if(R<=dmin){
+			theta=avoid_field(i,adv[j],speed_vector(robots_ini[i].position, robots[i].position),speed_vector(adv_ini[i], adv[i]));
+		}else if(R>dmin){
+			double gaussiana= exp(-pow(R-dmin,2)/(2*delta));
+			theta = (avoid_field(i,adv[j],speed_vector(robots_ini[i].position, robots[i].position),speed_vector(adv_ini[i], adv[i]))*gaussiana)+(move_to_goal_field(i,P)*(1-gaussiana));
+		}
+	}
+
+}
+
+cv::Point Strategy::speed_vector(cv::Point P_ini, cv::Point P_final){ //esta em pixels/segundo tem que ajeitar
+	double precTick = ticks;
+	ticks = (double) cv::getTickCount();
+	double dT = (ticks - precTick) / cv::getTickFrequency(); //seconds
+	cout<< "dt : "<< dT <<endl;
+	cout<< "f : "<<  P_final.x <<endl;
+	cout<< "i : "<<  P_ini.x <<endl;
+	double dx = P_final.x - P_ini.x;
+	double dy = P_final.y - P_ini.y;
+	cout<< "dx : "<< dx <<endl;
+	cv::Point vel;
+	vel.x = dx/dT;
+	vel.y = dy/dT;
+	return vel;
+}
