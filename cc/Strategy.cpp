@@ -1220,5 +1220,8 @@ cv::Point Strategy::speed_vector(cv::Point P_ini, cv::Point P_final){ //esta em 
 	cv::Point vel;
 	vel.x = dx/dT;
 	vel.y = dy/dT;
+
+	vel.x = vel.x *  (170.0 / 640.0);;
+	vel.y = vel.y * (130.0 / 480.0);
 	return vel;
 }
