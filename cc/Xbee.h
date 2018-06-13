@@ -26,6 +26,14 @@ struct robot_xbee {
 	ack_count acks;
 };
 
+#pragma pack(push, 1)
+template <int n>
+struct msg_data {
+	uint8_t msg_type;
+	float data[n];
+};
+#pragma pack(pop)
+
 class Xbee {
 	private:
 		struct xbee *xbee;
@@ -46,6 +54,16 @@ class Xbee {
 		void set_ack_enabled(char id, bool enable);
 		void set_ack_enabled(bool enable);
 		bool is_ack_enabled(char id);
+
+		template <int n>
+		int send(char id, msg_data<n> data) {
+			if (robots.count(id) == 0) return -1;
+
+			uint8_t ack;
+			xbee_connTx(robots[id].con, &ack, (unsigned char *) &data, sizeof(data));
+			update_ack(id, ack);
+			return ack;
+		}
 };
 
 #endif //VSSS_XBEE_H
