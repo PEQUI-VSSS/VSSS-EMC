@@ -449,6 +449,7 @@ simplificar apenas uma outra função.
 		double composed_field(int i, cv::Point P);
 		void get_uvf_targets(std::vector<Robot> &pRobots);
 		void atk_uvf_routine(int i);
+		double wrap(double theta);
 };
 
 #endif /* STRATEGY_HPP_ */

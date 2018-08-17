@@ -893,19 +893,14 @@ void Strategy::smart_ball(int i, int max_distance) {
 void Strategy::uvf_routine(int i){
 	Robot& robot = robots[i];
 	robot.cmdType = UVF;
-	robot.uvf_n = 2;
+	robot.uvf_n = 1.8;
 
-//		Target: Bola, deslocado um pouco na direção da posição predita
-	double ball_offset = 0.3 * distance(Ball_Est, Ball);
-	double theta_to_pred = std::atan2(Ball_Est.y - Ball.y,
-									  Ball_Est.x - Ball.x);
-	robot.target = cv::Point(int(ball_offset * std::cos(theta_to_pred)) + Ball.x,
-							 int(ball_offset * std::sin(theta_to_pred)) + Ball.y);
+	robot.target = Ball;
 
 //		Referência: 50px a partir da bola, em direção ao gol
 	double theta_to_ball = std::atan2(COORD_GOAL_MID_Y - Ball.y,
 									  ABS_GOAL_TO_GOAL_WIDTH - Ball.x);
-	double distance = 50;
+	double distance = 40;
 	robot.uvf_ref = cv::Point(int(distance * std::cos(theta_to_ball)) + Ball.x,
 							  int(distance * std::sin(theta_to_ball)) + Ball.y);
 	robot.using_pot_field = true;
@@ -924,8 +919,8 @@ void Strategy::atk_routine(int i) {
 			} else if (Ball.y > ABS_FIELD_HEIGHT - ABS_ROBOT_SIZE * 1.5 || Ball.y < ABS_ROBOT_SIZE * 1.5) {
 				robots[i].status = SIDEWAYS;
 			}
-			if(Ball.y < ABS_FIELD_HEIGHT - ABS_ROBOT_SIZE * 1.5 || Ball.y > ABS_ROBOT_SIZE * 1.5)
-			uvf_routine(i);
+//			if(Ball.y < ABS_FIELD_HEIGHT - ABS_ROBOT_SIZE * 1.5 || Ball.y > ABS_ROBOT_SIZE * 1.5)
+				uvf_routine(i);
 			//pot_field_around(i);
 			crop_targets(i);
 
@@ -1040,16 +1035,14 @@ void Strategy::atk_routine(int i) {
 							if(robots[i].position.y > ABS_ROBOT_SIZE*1.5) {//verifica se o robô está perto da parede
 								uvf_routine(i);
 							}else {
-							go_to(i,
-								  Ball); // se Ball.y < robots[i].position.y -> faz a bola travar no canto pra girar certo
+								go_to(i, Ball); // se Ball.y < robots[i].position.y -> faz a bola travar no canto pra girar certo
 							}
 						}
 					} else {
-						if (Ball.y > robots[i].position.y &&
-							distance(Ball, robots[i].position) < ABS_ROBOT_SIZE)
-							spin_anti_clockwise(i, 1.4); // giro para faze-la entrar
-						else
-							go_to(i, Ball);
+						if (distance(Ball, robots[i].position) < ABS_ROBOT_SIZE) { // giro para faze-la entrar
+							if(robots[i].position.y > Ball.y) spin_clockwise(i, 1.4);
+							else spin_anti_clockwise(i, 1.4);
+						} else go_to(i, Ball);
 					}
 				} else {
 					if (Ball.y > COORD_GOAL_DWN_Y) {
@@ -1057,18 +1050,17 @@ void Strategy::atk_routine(int i) {
 							distance(Ball, robots[i].position) < ABS_ROBOT_SIZE) {
 							spin_anti_clockwise(i);
 						}else {
-							if(robots[i].position.y < ABS_FIELD_HEIGHT - (ABS_ROBOT_SIZE*1.5)){
-							uvf_routine(i);
+							if(robots[i].position.y < ABS_FIELD_HEIGHT - (ABS_ROBOT_SIZE)){
+								uvf_routine(i);
 							}else{
-							go_to(i,
-								  Ball); // se Ball.y > robots[i].position.y -> faz a bola travar no canto pra girar certo
+								go_to(i, Ball); // se Ball.y > robots[i].position.y -> faz a bola travar no canto pra girar certo
 						    }
 						}
 					} else {
-						if (Ball.y > robots[i].position.y &&
-							distance(Ball, robots[i].position) < ABS_ROBOT_SIZE)
-							spin_clockwise(i, 1.4); // giro para faze-la entrar
-						else go_to(i, Ball);
+						if (distance(Ball, robots[i].position) < ABS_ROBOT_SIZE) {
+							if(robots[i].position.y > Ball.y) spin_clockwise(i, 1.4);
+							else spin_anti_clockwise(i, 1.4);
+						} else go_to(i, Ball);
 					}
 				}
 			} else {
