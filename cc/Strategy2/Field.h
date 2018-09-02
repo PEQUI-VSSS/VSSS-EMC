@@ -103,6 +103,7 @@ namespace field {
 			}
 			namespace back {
 				// Adicione aqui as geometrias de interesse do fundo do gol adversário
+				const Geometry::Point center( {field_width, field_height/2} );
 			}
 		}
 		namespace area {

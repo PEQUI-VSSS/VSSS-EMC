@@ -53,13 +53,6 @@ namespace Geometry {
 		Point b;
 	};
 
-	struct Pose {
-		Point position;
-		double orientation;
-
-		Pose(cv::Point cv_position, double cv_orientation);
-	};
-
 	constexpr Point middle(const Point& p1, const Point &p2) noexcept {
 		return {(p1.x + p2.x)/2, (p1.y + p2.y)/2};
 	}

@@ -3,14 +3,10 @@
 using namespace Geometry;
 using namespace field;
 
-//	Placeholders, devem ser substituidos pelas constantes do Field
-const static Line back_line({10,10}, {10, 0});
-const static Point goal_center({5, 10});
-
 void Attacker::uvf_to_goal(Point ball) {
-	Vector ball_to_goal = goal_center - ball;
+	Vector ball_to_goal = their::goal::back::center - ball;
 
-	if(distance(ball,get_position())>0.03){
+	if(distance(ball, get_position()) > 0.03){
 		go_to_pose(ball, ball_to_goal);
 	}else{
 	    go_in_direction(ball_to_goal);
@@ -18,11 +14,11 @@ void Attacker::uvf_to_goal(Point ball) {
 }
 
 void Attacker::spin_shot(Point ball){
-	if (ball.y>get_position().y){
+	if (ball.y > get_position().y){
 		spin(35);//Robô gira no sentido anti-horário
 	}else{
-		if(ball.y==get_position().y) {
-		   if(ball.y>goal_center.y){
+		if(ball.y == get_position().y) {
+		   if(ball.y > their::goal::front::center.y){
 			   spin(35);//Robô gira no sentido anti-horárioo
 		   }else{
 			   spin(-35);// Robô gira no sentido horário

@@ -52,25 +52,3 @@ Vector Vector::with_size(double new_size) {
 Vector Vector::operator*(double value) {
 	return {size * value, theta};
 }
-
-//	Exemplos de uso de Geometry
-Point tests() {
-	Point p3{0, 0};
-	Point p4{2, 3};
-	Line robot_line(p3, p4);
-
-//	Teste de ponto na direção de vetor
-	Vector v1 = p4 - p3;
-	Point x = p3 + v1.unitary() * 2;
-//	ou
-	Point x2 = p3 + v1.with_size(2);
-
-//	Teste de intersecção
-	Line test_line(x, p3);
-	Point inter = intersection(test_line, robot_line);
-	return inter;
-}
-
-Pose::Pose(cv::Point cv_position, double cv_orientation) :
-		position(from_cv_point(cv_position)),
-		orientation(-cv_orientation) {}
