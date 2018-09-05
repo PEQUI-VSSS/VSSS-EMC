@@ -3,14 +3,35 @@
 using namespace Geometry;
 using namespace field;
 
-void Attacker::uvf_to_goal(Point ball) {
-	Vector ball_to_goal = their::goal::back::center - ball;
+void p(const std::string &text) {
+//	std::cout << text << std::endl;
+}
 
-	if(distance(ball, get_position()) > 0.03){
+void Attacker::uvf_to_goal(Point ball) {
+	const Point goal = their::goal::back::center;
+	Vector ball_to_goal = goal - ball;
+
+	Vector robot_to_ball = ball - get_position();
+	Vector robot_to_goal = goal - get_position();
+	double theta_error = wrap(robot_to_goal.theta -  robot_to_ball.theta);
+	double orientation_error = (robot_to_ball.theta - get_pose().orientation);
+
+//	std::cout << orientation_error * 180.0/M_PI << std::endl;
+//	std::cout << theta_error * 180.0/M_PI << std::endl;
+//	std::cout << distance(ball, get_position()) << std::endl;
+
+	if (std::abs(theta_error) < degree_to_rad(30) &&
+			std::abs(orientation_error) < degree_to_rad(15) &&
+			distance(ball, get_position()) < 0.07) {
+//		std::cout << "go to" << std::endl;
+		go_to(goal, 1.4);
+	} else {
+//		std::cout << "uvf" << std::endl;
 		go_to_pose(ball, ball_to_goal);
-	}else{
-	    go_in_direction(ball_to_goal);
+//		go_to_pose(goal, {1, 0}, 1.4);
+//	    go_in_direction(robot_to_goal);
 	}
+	p("uvf to goal");
 }
 
 void Attacker::spin_shot(Point ball){
@@ -27,6 +48,7 @@ void Attacker::spin_shot(Point ball){
 			spin(-35);// Robô gira no sentido horário
 		}
 	}
+	p("spin shot");
 }
 
 void Attacker::crossing(Point ball){
@@ -47,6 +69,7 @@ void Attacker::crossing(Point ball){
 		//porém a condição tem que ser verificada pela estratégia antes de chamar o crossing,
 		//ele vai só entrar nesse else em caso de ser chamado em hora indevida.
 	}
+	p("crossing");
 }
 
 void Attacker::protect_goal(const Geometry::Point &ball) {
@@ -63,8 +86,10 @@ void Attacker::protect_goal(const Geometry::Point &ball) {
 		// bloquear area (baixo)
 		go_to_and_stop(our::corner::lower::attacker::point);
 	}
+	p("protect goal");
 }
 
 void Attacker::charged_shot(const Geometry::Point &ball) {
 	go_in_direction(ball - get_position(), 1.2);
+	p("charged shot");
 }
