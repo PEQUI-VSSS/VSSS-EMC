@@ -4,12 +4,22 @@ using namespace Geometry;
 using namespace field;
 
 void Attacker::uvf_to_goal(Point ball) {
-	Vector ball_to_goal = their::goal::back::center - ball;
+	const Point goal = their::goal::back::center;
+	Vector ball_to_goal = goal - ball;
 
-	if(distance(ball, get_position()) > 0.03){
+	Vector robot_to_ball = ball - get_position();
+	Vector robot_to_goal = goal - get_position();
+	double theta_error = wrap(robot_to_goal.theta -  robot_to_ball.theta);
+	double orientation_error = (robot_to_ball.theta - get_pose().orientation);
+
+	if (std::abs(theta_error) < degree_to_rad(30) &&
+			std::abs(orientation_error) < degree_to_rad(20) &&
+			distance(ball, get_position()) < 0.08) {
+		go_to(goal);
+	} else {
 		go_to_pose(ball, ball_to_goal);
-	}else{
-	    go_in_direction(ball_to_goal);
+//		go_to_pose(goal, {1, 0}, 1.4);
+//	    go_in_direction(robot_to_goal);
 	}
 }
 
@@ -50,9 +60,9 @@ void Attacker::crossing(Point ball){
 }
 
 void Attacker::protect_goal(const Geometry::Point &ball) {
-	if (distance(get_position(), ball) < 0.1) {
+	if (distance(get_position(), ball) < 0.08) {
 		 // Se a bola chegar perto, gira para jogar a bola longe
-		if (at_location(ball, Location::UpperField))
+		if (ball.y > get_position().y)
 			spin(-35); // horário
 		else
 			spin(35); // anti-horário

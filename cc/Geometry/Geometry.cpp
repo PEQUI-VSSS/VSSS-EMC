@@ -10,7 +10,7 @@ double Geometry::wrap(double theta) {
 }
 
 double Geometry::distance(const Point &a, const Point &b) {
-	return sqrt(pow(a.x - b.x, 2) + pow(a.y - b.y, 2));
+	return std::sqrt(std::pow(a.x - b.x, 2) + std::pow(a.y - b.y, 2));
 }
 
 double Geometry::distance_x(const Point &a, const Point &b) {
