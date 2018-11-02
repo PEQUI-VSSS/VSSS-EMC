@@ -25,6 +25,17 @@ void Robot2::go_to_and_stop(Geometry::Point point, double velocity) {
 	}
 }
 
+
+void Robot2::go_to_and_set_orientation(Geometry::Point point, double orientation, double velocity) {
+	if (distance(point, pose.position) >= OFFSET) {
+		command = Command::Position;
+		target.position = point;
+		target.velocity = velocity;
+	} else {
+		set_target_orientation({1, orientation});
+	}
+}
+
 void Robot2::go_in_direction(Geometry::Vector vector, double velocity) {
 	command = Command::Vector;
 	target.orientation = vector.theta;
@@ -71,3 +82,4 @@ void Robot2::set_pose(const Pose &new_pose) {
 void Robot2::set_ID(char new_ID) {
 	ID = new_ID;
 }
+

@@ -38,7 +38,7 @@ class Robot2 {
 		char ID = 'A';
 		unsigned int tag = 0;
 		double default_target_velocity = 0.8; // Velocidade padrão do robô
-		const double OFFSET = 0.05; // tolerância para saber se o robô chegou no ponto
+		const double OFFSET = 0.03; // tolerância para saber se o robô chegou no ponto
 
 		/**	Robô vai para um ponto e continua se movendo com mesma velocidade"
 		 *	@param point Ponto em que o robô deve passar
@@ -58,6 +58,7 @@ class Robot2 {
 		 *	@param velocity Velocidade do movimento. Caso não seja definida,
 		 *	robô se move com velocidade "default_target_velocity" */
 		void go_to_and_stop(Geometry::Point point, double velocity);
+		void go_to_and_set_orientation(Geometry::Point point, double orientation, double velocity);
 		/**	Robô se move na direcao do vetor
 		 *	@param vector Vetor que define a orientacao
 		 *	em que o robô deve se mover

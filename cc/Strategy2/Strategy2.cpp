@@ -58,6 +58,7 @@ void Strategy2::execute_goalkeeper() {
 		goalkeeper.spin_shot(ball);
 	else
 		goalkeeper.protect_goal(ball, ball_est);
+
 }
 
 void Strategy2::execute_defender() {
