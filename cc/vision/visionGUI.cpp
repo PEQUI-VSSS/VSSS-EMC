@@ -709,8 +709,8 @@ void VisionGUI::__create_frm_cielab() {
 	grid->attach(*label, 0, 4, 1, 1);
 
 	HScale_Blur.set_digits(0);
-	HScale_Blur.set_increments(2, 2);
-	HScale_Blur.set_range(3, 9);
+	HScale_Blur.set_increments(1, 1);
+	HScale_Blur.set_range(0, 9);
 	HScale_Blur.set_value_pos(Gtk::POS_TOP);
 	HScale_Blur.set_draw_value();
 	grid->attach(HScale_Blur, 1, 4, 2, 1);
@@ -833,14 +833,7 @@ void VisionGUI::HScale_Erode_value_changed() {
 }
 
 void VisionGUI::HScale_Blur_value_changed() {
-
-	if (HScale_Blur.get_value() < 3) {
-		vision->setBlur(Img_id, 3);
-	} else if ((int) HScale_Blur.get_value() % 2 == 0) {
-		vision->setBlur(Img_id, (int) HScale_Blur.get_value() + 1);
-	} else {
-		vision->setBlur(Img_id, (int) HScale_Blur.get_value());
-	}
+	vision->setBlur(Img_id, static_cast<int>(HScale_Blur.get_value()));
 }
 
 void VisionGUI::__event_bt_CIELAB_calib_pressed() {

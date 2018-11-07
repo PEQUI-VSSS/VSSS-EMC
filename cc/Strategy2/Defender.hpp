@@ -14,6 +14,7 @@ class Defender : public Robot2 {
 		// Behaviors
 		void protect_goal(const Geometry::Point &ball);
 		void wait_at_target(Geometry::Point target, Geometry::Point &ball);
+		void exit_goal();
 };
 
 #endif //VSSS_DEFENDER_HPP

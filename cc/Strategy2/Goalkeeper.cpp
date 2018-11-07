@@ -37,7 +37,15 @@ void Goalkeeper::protect_goal(const Point& ball, const Point& ball_est) {
 }
 
 void Goalkeeper::spin_shot(const Point& ball) {
-	if (ball.x > get_position().x) { // bola na frente/lateral do goleiro
+	double lower_robot_x = get_position().x - size/4; // é size/4 para que evite fazer gol contra
+	double upper_robot_x = get_position().x + size/2;
+
+	if (ball.x > upper_robot_x) { // bola na frente do goleiro
+		if (at_location(get_position(), Location::UpperField))
+			spin(35.0);
+		else
+			spin(-35.0);
+	} else if (ball.x > lower_robot_x && ball.x <= upper_robot_x) { // bola na lateral do goleiro
 		if (ball.y > get_position().y) // bola acima do goleiro
 			spin(-35.0); // horário
 		else
@@ -48,3 +56,6 @@ void Goalkeeper::spin_shot(const Point& ball) {
 	}
 }
 
+void Goalkeeper::exit_goal() {
+		go_to_and_stop(our::area::box::center_line_point);
+}

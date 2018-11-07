@@ -34,11 +34,12 @@ class Robot2 {
 	public:
 		Geometry::Point uvf_ref;
 
-    	const double size = 0.08;
+    	const double size = 0.074;
 		char ID = 'A';
 		unsigned int tag = 0;
 		double default_target_velocity = 0.8; // Velocidade padrão do robô
-		const double OFFSET = 0.03; // tolerância para saber se o robô chegou no ponto
+		const double TARGET_OFFSET = 0.03; // tolerância para saber se o robô chegou no ponto
+		const double BALL_OFFSET = 0.08; // tolerância para saber se a bola está próxima ao robô
 
 		/**	Robô vai para um ponto e continua se movendo com mesma velocidade"
 		 *	@param point Ponto em que o robô deve passar

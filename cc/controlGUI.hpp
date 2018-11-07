@@ -27,6 +27,9 @@
 #include <chrono>
 
 class ControlGUI : public Gtk::VBox {
+	private:
+		int xbee_connections = 0;
+
 	public:
 		Messenger messenger;
 
@@ -108,6 +111,11 @@ class ControlGUI : public Gtk::VBox {
 		void set_frameskipper();
 		void update_msg_time();
 		void ekf_always_send_enable();
+
+		// essa função não deve ser chamada imediatamente após desconectar o xbee
+		// o xbee demora alguns segundos para realmente desconectar
+		// conecta o xbee automaticamente caso tenha apenas um conectado
+		void auto_start_serial();
 };
 
 #endif /* CONTROLGUI_HPP_ */

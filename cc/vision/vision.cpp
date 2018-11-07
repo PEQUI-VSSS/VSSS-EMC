@@ -1,4 +1,5 @@
 #include <Geometry/Geometry.h>
+#include <Strategy2/Field.h>
 #include "vision.hpp"
 
 using namespace vision;
@@ -49,7 +50,9 @@ void Vision::posProcessing(const unsigned long color) {
 	cv::Mat erodeElement = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(3, 3));
 	cv::Mat dilateElement = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(3, 3));
 
-	cv::medianBlur(threshold_frame.at(color), threshold_frame.at(color), blur[color]);
+	if (blur[color] > 0) {
+		cv::medianBlur(threshold_frame.at(color), threshold_frame.at(color), blur[color]);
+	}
 	cv::erode(threshold_frame.at(color), threshold_frame.at(color), erodeElement, cv::Point(-1, -1),
 			  erode[color]);
 	cv::dilate(threshold_frame.at(color), threshold_frame.at(color), dilateElement, cv::Point(-1, -1),
@@ -154,8 +157,8 @@ void Vision::pick_a_tag(std::vector<VisionROI> *windowsList) {
 //		robot.position = tags.at(Color::Main).at(i).position;
 //
 //		// Cálculo da orientação de acordo com os pontos rear e front
-//		robot.orientation = atan2((tags.at(Color::Main).at(i).frontPoint.y - robot.position.y) * 1.3 / height,
-//								  (tags.at(Color::Main).at(i).frontPoint.x - robot.position.x) * 1.5 / width);
+//		robot.orientation = atan2((tags.at(Color::Main).at(i).frontPoint.y - robot.position.y) * field::field_height / height,
+//								  (tags.at(Color::Main).at(i).frontPoint.x - robot.position.x) * field::field_width / width);
 //
 //		// Armazena a tag
 //		tempTags.push_back(tags.at(Color::Main).at(i));
@@ -235,8 +238,8 @@ std::array<Vision::RecognizedTag, 3> Vision::pick_a_tag() {
 		cv::Point position = main_tag.position;
 
 		// Cálculo da orientação de acordo com os pontos rear e front
-		double orientation = atan2((main_tag.frontPoint.y - position.y) * 1.3 / height,
-								  (main_tag.frontPoint.x - position.x) * 1.7 / width);
+		double orientation = atan2((main_tag.frontPoint.y - position.y) * field::field_height / height,
+								  (main_tag.frontPoint.x - position.x) * field::field_width / width);
 
 		// Para cada tag principal, verifica quais são as secundárias correspondentes
 		for (Tag &secondary_tag : tags.at(Color::Green)) {
@@ -292,8 +295,8 @@ std::array<Vision::RecognizedTag, 3> Vision::pick_a_tag() {
 //		auto position = tags.at(Color::Main).at(i).position;
 //
 //		// Cálculo da orientação de acordo com os pontos rear e front
-//		robot.orientation = atan2((tags.at(Color::Main).at(i).frontPoint.y - robot.position.y) * 1.3 / height,
-//								  (tags.at(Color::Main).at(i).frontPoint.x - robot.position.x) * 1.7 / width);
+//		robot.orientation = atan2((tags.at(Color::Main).at(i).frontPoint.y - robot.position.y) * field::field_height / height,
+//								  (tags.at(Color::Main).at(i).frontPoint.x - robot.position.x) * field::field_width / width);
 //
 //		// Armazena a tag
 //		tempTags.push_back(tags.at(Color::Main).at(i));
@@ -363,12 +366,12 @@ int Vision::in_sphere(cv::Point secondary, Tag *main_tag, std::vector<Tag> *seco
 		if (calcDistance(main_tag->frontPoint, secondary) < calcDistance(main_tag->rearPoint, secondary)) {
 			main_tag->switchPoints();
 			// recalcula a orientação com os novos pontos (isso só é feito uma vez em cada robô, se necessário)
-			*orientation = atan2((main_tag->frontPoint.y - main_tag->position.y) * 1.3 / height,
-								(main_tag->frontPoint.x - main_tag->position.x) * 1.5 / width);
+			*orientation = atan2((main_tag->frontPoint.y - main_tag->position.y) * field::field_height / height,
+								(main_tag->frontPoint.x - main_tag->position.x) * field::field_width / width);
 		}
 
-		float secSide = atan2((secondary.y - main_tag->position.y) * 1.3 / height,
-							  (secondary.x - main_tag->position.x) * 1.5 / width);
+		float secSide = atan2((secondary.y - main_tag->position.y) * field::field_height / height,
+							  (secondary.x - main_tag->position.x) * field::field_width / width);
 
 		// Cálculo do ângulo de orientação para diferenciar robôs de mesma cor
 		return (atan2(sin(secSide - *orientation + 3.1415), cos(secSide - *orientation + 3.1415))) > 0 ? 1 : -1;
@@ -382,12 +385,12 @@ int Vision::in_sphere(cv::Point secondary, Tag *main_tag, std::vector<Tag> *seco
 //		if (calcDistance(tempTags->at(0).frontPoint, secondary) < calcDistance(tempTags->at(0).rearPoint, secondary)) {
 //			tempTags->at(0).switchPoints();
 //			// recalcula a orientação com os novos pontos (isso só é feito uma vez em cada robô, se necessário)
-//			robot->orientation = atan2((tempTags->at(0).frontPoint.y - robot->position.y) * 1.3 / height,
-//									   (tempTags->at(0).frontPoint.x - robot->position.x) * 1.5 / width);
+//			robot->orientation = atan2((tempTags->at(0).frontPoint.y - robot->position.y) * field::field_height / height,
+//									   (tempTags->at(0).frontPoint.x - robot->position.x) * field::field_width / width);
 //		}
 //
-//		float secSide = atan2((secondary.y - robot->position.y) * 1.3 / height,
-//							  (secondary.x - robot->position.x) * 1.5 / width);
+//		float secSide = atan2((secondary.y - robot->position.y) * field::field_height / height,
+//							  (secondary.x - robot->position.x) * field::field_width / width);
 //
 //		// Cálculo do ângulo de orientação para diferenciar robôs de mesma cor
 //		return (atan2(sin(secSide - robot->orientation + 3.1415), cos(secSide - robot->orientation + 3.1415))) > 0 ? 1
@@ -470,33 +473,43 @@ void Vision::collectImagesForCalibration() {
 	cv::String path("media/pictures/camCalib/*.png"); //select only png
 	std::vector<cv::String> fn;
 	std::vector<cv::Mat> data;
-	cv::glob(path, fn, true); // recurse
-	for (auto &index : fn) {
-		cv::Mat im = cv::imread(index);
-		if (im.empty()) continue; //only proceed if sucsessful
-		// you probably want to do some preprocessing
-		savedCamCalibFrames.push_back(im);
-	}
-	std::cout << "Pictures collected: " << savedCamCalibFrames.size() << std::endl;
-	cameraCalibration();
+    try{
+        cv::glob(path, fn, true); // recurse
+        for (auto &index : fn) {
+            cv::Mat im = cv::imread(index);
+            if (im.empty()) continue; //only proceed if sucsessful
+            // you probably want to do some preprocessing
+            savedCamCalibFrames.push_back(im);
+        }
+        std::cout << "Pictures collected: " << savedCamCalibFrames.size() << std::endl;
+        cameraCalibration();
+
+    }catch (...){
+        std::cout << "An exception occurred. No images for calibration. \n";
+    }
+
 }
 
 void Vision::cameraCalibration() {
 
 	std::vector<std::vector<cv::Point2f>> checkerBoardImageSpacePoints;
-	checkerBoardImageSpacePoints = getChessBoardCorners(savedCamCalibFrames);
-	std::cout << "Image Space Points " << checkerBoardImageSpacePoints.size() << std::endl;
-	std::vector<std::vector<cv::Point3f>> worldSpaceCornersPoints(1);
+    std::vector<std::vector<cv::Point3f>> worldSpaceCornersPoints;
 
-	worldSpaceCornersPoints[0] = createKnownBoardPosition(CHESSBOARD_DIMENSION, CALIBRATION_SQUARE_DIMENSION);
-	worldSpaceCornersPoints.resize(checkerBoardImageSpacePoints.size(), worldSpaceCornersPoints[0]);
+	getChessBoardCorners(savedCamCalibFrames, worldSpaceCornersPoints, checkerBoardImageSpacePoints);
+	std::cout << "Image Space Points " << checkerBoardImageSpacePoints.size() << std::endl;
+
 	std::cout << "world SpaceCorners Points " << worldSpaceCornersPoints.size() << std::endl;
 	std::vector<cv::Mat> rVectors, tVectors;
 	distanceCoeficents = cv::Mat::zeros(8, 1, CV_64F);
 
+    int flag = 0;
+    flag |= CV_CALIB_FIX_K4;
+    flag |= CV_CALIB_FIX_K5;
+
 	//root mean square (RMS) reprojection error and should be between 0.1 and 1.0 pixels in a good calibration.
-	double rms = cv::calibrateCamera(worldSpaceCornersPoints, checkerBoardImageSpacePoints, CHESSBOARD_DIMENSION,
-									 cameraMatrix, distanceCoeficents, rVectors, tVectors);
+    double rms = cv::calibrateCamera(worldSpaceCornersPoints, checkerBoardImageSpacePoints, in_frame.size(),
+                                     cameraMatrix, distanceCoeficents, rVectors, tVectors, flag);
+
 	savedCamCalibFrames.clear();
 
 	flag_cam_calibrated = true;
@@ -510,35 +523,30 @@ void Vision::cameraCalibration() {
 	std::cout << "End of calibration" << std::endl;
 }
 
-// criando um vetor com a posiçap de todos os pontos que pertencem ao padrao em milimetros desconsiderando Z para ficar
-// computacionalmente mais barato
-std::vector<cv::Point3f> Vision::createKnownBoardPosition(cv::Size boardSize, float squareEdgeLenght) {
-	std::vector<cv::Point3f> corners;
-	for (int i = 0; i < boardSize.height; i++) {
-		for (int j = 0; j < boardSize.width; ++j) {
-			corners.emplace_back(squareEdgeLenght, i * squareEdgeLenght, 0.0f);
-		}
-	}
 
-	return corners;
-}
-
-std::vector<std::vector<cv::Point2f>> Vision::getChessBoardCorners(std::vector<cv::Mat> images) const {
+void Vision::getChessBoardCorners(std::vector<cv::Mat> images, std::vector<std::vector<cv::Point3f>>& pts3d,std::vector<std::vector<cv::Point2f>>& pts2d) const {
 	cv::TermCriteria termCriteria = cv::TermCriteria(CV_TERMCRIT_EPS + CV_TERMCRIT_ITER, 40, 0.001);
 	cv::Mat grayFrame;
-	std::vector<std::vector<cv::Point2f>> allFoundCorners;
+	//std::vector<std::vector<cv::Point2f>> allFoundCorners;
 	for (auto &image : images) {
 		std::vector<cv::Point2f> pointBuf;
+        std::vector<cv::Point3f> corners;
+
 		bool found = cv::findChessboardCorners(image, CHESSBOARD_DIMENSION, pointBuf,
 											   CV_CALIB_CB_ADAPTIVE_THRESH | CV_CALIB_CB_NORMALIZE_IMAGE);
+        for (int i = 0; i < CHESSBOARD_DIMENSION.height; i++) {
+            for (int j = 0; j < CHESSBOARD_DIMENSION.width; ++j) {
+                corners.emplace_back(j * CALIBRATION_SQUARE_DIMENSION, i * CALIBRATION_SQUARE_DIMENSION, 0.0f);
+            }
+        }
 
 		if (found) {
 			cv::cvtColor(image, grayFrame, cv::COLOR_RGB2GRAY);
-			cv::cornerSubPix(grayFrame, pointBuf, cv::Size(11, 11), cv::Size(-1, -1), termCriteria);
-			allFoundCorners.push_back(pointBuf);
+			cv::cornerSubPix(grayFrame, pointBuf, cv::Size(5, 5), cv::Size(-1, -1), termCriteria);
+			pts2d.push_back(pointBuf);
+            pts3d.push_back(corners);
 		}
 	}
-	return allFoundCorners;
 }
 
 bool Vision::foundChessBoardCorners() const {
@@ -641,10 +649,15 @@ void Vision::setDilate(const unsigned long index, const int inValue) {
 	else std::cout << "Vision:setDilate: could not set (invalid index or convert type)" << std::endl;
 }
 
-void Vision::setBlur(const unsigned long index, const int inValue) {
-	if (index < MAX_COLORS)
-		blur[index] = inValue;
-	else std::cout << "Vision:setBlur: could not set (invalid index or convert type)" << std::endl;
+void Vision::setBlur(const unsigned long index, int inValue) {
+	if (index < MAX_COLORS) {
+		if (inValue == 0 || inValue % 2 == 1)
+			blur[index] = inValue;
+		else
+			blur[index] = inValue+1;
+	} else {
+		std::cout << "Vision:setBlur: could not set (invalid index or convert type)" << std::endl;
+	}
 }
 
 void Vision::setAmin(const unsigned long index, const int inValue) {

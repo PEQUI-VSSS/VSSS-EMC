@@ -35,6 +35,8 @@ namespace field {
 			TheirCornerAny, // Qualquer um dos cantos do time oponente
 			WideDangerZone, // região do nosso campo a esquerda da linha onde os robôs oponentes cobram falta
 			TheirAreaSideAny,  // laterais da área adversária (regiões da área que não ficam em frente ao gol)
+			AnySide,//qualquer lateral do campo
+			AnyGoal,
 	};
 	// -----------------------------------------------------------------------------------------------------------------
 
@@ -49,6 +51,7 @@ namespace field {
 				const Geometry::Line center_line({goal_width+area_width/2, 0}, {goal_width+area_width/2, field_height});
 				const Geometry::Point lower_limit({goal_width+area_width/2, corner_height+(area_height-goal_height)/2});
 				const Geometry::Point upper_limit({goal_width+area_width/2,  + field_height-corner_height-(area_height-goal_height)/2});
+				const Geometry::Point center_line_point({goal_width+area_width/2, field_height/2});
 			}
 			namespace upper {
 				const Geometry::Point center({goal_width+area_width/2, area_height+corner_height});

@@ -5,7 +5,7 @@
 #include <iostream>
 #include <vector>
 
-#define ROBOT_RADIUS 17 // valor encontrado empiricamente (quanto menor, mais próximos os robôs podem ficar sem dar errado)
+#define ROBOT_RADIUS 15 // valor encontrado empiricamente (quanto menor, mais próximos os robôs podem ficar sem dar errado)
 
 class Tag {
 	public:

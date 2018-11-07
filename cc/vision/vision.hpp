@@ -125,9 +125,9 @@ namespace vision
 		cv::Mat cameraMatrix;
 		cv::Mat distanceCoeficents;
 		bool flag_cam_calibrated = false;
-		std::vector<std::vector<cv::Point2f>> getChessBoardCorners(std::vector<cv::Mat> images) const;
+		void getChessBoardCorners(std::vector<cv::Mat> images, std::vector<std::vector<cv::Point3f>>& pts3d,std::vector<std::vector<cv::Point2f>>& pts2d) const;
 		std::vector<cv::Mat> getCamCalibFrames() const { return savedCamCalibFrames; };
-		cv::Mat getcameraMatrix() const { return distanceCoeficents; };
+		cv::Mat getcameraMatrix() const { return cameraMatrix; };
 		cv::Mat getdistanceCoeficents() const { return distanceCoeficents; };
 		void setFlagCamCalibrated(bool value);
 		void saveCamCalibFrame();
