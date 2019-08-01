@@ -18,7 +18,7 @@ class Messenger {
 			double theta;
 		};
 
-		Xbee *xbee = nullptr;
+
 
 		double time_between_msgs;
 		int frameskip, send_cmd_count;
@@ -28,6 +28,7 @@ class Messenger {
 		std::string rounded_str(double num);
 
 	public:
+		Xbee *xbee = nullptr;
 //		std::ofstream ekf_data_file;
 		Messenger();
 		void send_commands(const std::array<Robot2 *, 3> &robots);

@@ -5,7 +5,7 @@ using std::string;
 using std::pair;
 using std::vector;
 
-Xbee::Xbee(const string &port, int baud) {
+Xbee::Xbee(const string &port, int baud) : logs("logs_from_robots.txt"){
 	xbee_err ret;
 
 	if ((ret = xbee_setup(&xbee, "xbee1", port.c_str(), baud)) != XBEE_ENONE) {
@@ -133,5 +133,14 @@ ack_count Xbee::get_ack_count(char id) {
 void Xbee::reset_lost_acks() {
 	for (auto &r : robots) {
 		r.second.acks = {0, 0, 0};
+	}
+}
+
+void Xbee::save_logs() {
+	struct xbee_pkt *pkt;
+	for (auto &r : robots) {
+		if (xbee_conRx(r.second.con, &pkt, nullptr) == XBEE_ENONE && pkt->dataLen > 0) {
+			logs << get_string(pkt) << std::endl;
+		}
 	}
 }

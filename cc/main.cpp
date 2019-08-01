@@ -1,4 +1,5 @@
 #include <gtkmm.h>
+#include <thread>
 #include "CamCap.hpp"
 
 int main(int argc, char **argv) {
@@ -26,6 +27,14 @@ int main(int argc, char **argv) {
 	camcap.interface.controlGUI.update_ack_interface();
 
 	window.maximize();
+
+
+	auto handler = std::thread([&]{
+		auto& xbee = camcap.interface.controlGUI.messenger.xbee;
+		while (true) {
+			if (xbee != nullptr) xbee->save_logs();
+		}
+	});
 
 	Gtk::Main::run(window);
 

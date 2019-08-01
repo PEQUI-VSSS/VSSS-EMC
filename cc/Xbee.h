@@ -8,6 +8,7 @@
 #include <cstring>
 #include <unordered_map>
 #include <iostream>
+#include <fstream>
 
 struct message {
 	char id;
@@ -34,6 +35,7 @@ class Xbee {
 		std::string get_string(xbee_pkt *pkt);
 		void update_ack(char id, int ack);
 
+		std::ofstream logs;
 //		Código de serializacão de variáveis
 
 //		Caso base da recursão
@@ -63,6 +65,7 @@ class Xbee {
 		std::string send_get_answer(char id, const std::string &message);
 		std::vector<message> send_get_answer(const std::string &message);
 		std::vector<message> get_messages();
+		void save_logs();
 		ack_count get_ack_count(char id);
 		void reset_lost_acks();
 		void set_ack_enabled(char id, bool enable);
