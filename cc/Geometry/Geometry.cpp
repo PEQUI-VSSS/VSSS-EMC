@@ -38,6 +38,11 @@ Point Point::operator+(const Vector &v) const {
 			y + v.size * std::sin(v.theta)};
 }
 
+Point Point::operator-(const Vector &v) const {
+	return {x - v.size * std::cos(v.theta),
+			y - v.size * std::sin(v.theta)};
+}
+
 Point Geometry::from_cv_point(const cv::Point cv_point) {
 	return from_cv_point(cv_point.x, cv_point.y);
 }
@@ -67,4 +72,58 @@ Vector Vector::with_size(double new_size) {
 
 Vector Vector::operator*(double value) {
 	return {size * value, theta};
+}
+
+bool Rectangle::intersect(const Rectangle &b) {
+	auto& a = *this;
+	for(int polyi = 0; polyi < 2; ++polyi) {
+
+		const Rectangle& polygon = (polyi == 0) ? a : b;
+
+		for(int i1 = 0; i1 < (int) polygon.points.size(); ++i1) {
+			const int i2 = (i1 + 1) % (int) polygon.points.size();
+
+			const double normalx = polygon.points[i2].y - polygon.points[i1].y;
+			const double normaly = polygon.points[i2].x - polygon.points[i1].x;
+
+			double minA = std::numeric_limits<double>::max();
+			double maxA = std::numeric_limits<double>::min();
+
+			for(auto & point : a.points) {
+				const double projected = normalx * point.x +
+										 normaly * point.y;
+				if(projected < minA) minA = projected;
+				if(projected > maxA) maxA = projected;
+			}
+
+			double minB = std::numeric_limits<double>::max();
+			double maxB = std::numeric_limits<double>::min();
+
+			for(auto point : b.points) {
+				const double projected = normalx * point.x +
+										 normaly * point.y;
+				if( projected < minB ) minB = projected;
+				if( projected > maxB ) maxB = projected;
+			}
+
+			if(maxA < minB || maxB < minA)
+				return false;
+		}
+	}
+
+	return true;
+}
+
+#include <Robot2.h>
+static constexpr double HALF_ROBOT = Robot2::SIZE/2;
+Rectangle Rectangle::from_robot(Point p, Vector to_front, double offset) {
+	auto to_left = Vector(to_front.theta + degree_to_rad(90), HALF_ROBOT);
+	auto to_right = Vector(to_front.theta + degree_to_rad(-90), HALF_ROBOT);
+	auto middle_left = p + to_left;
+	auto front_left = middle_left + to_front.with_size(HALF_ROBOT + offset);
+	auto back_left = middle_left - to_front.with_size(HALF_ROBOT + offset);
+	auto middle_right = p + to_right;
+	auto front_right = middle_right + to_front.with_size(HALF_ROBOT + offset);
+	auto back_right = middle_right - to_front.with_size(HALF_ROBOT + offset);
+	return Rectangle{{back_left, front_left, front_right, back_right}};
 }

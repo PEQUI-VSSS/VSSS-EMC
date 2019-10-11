@@ -32,6 +32,7 @@ namespace Geometry {
 		constexpr Point() noexcept : x(0), y(0) {};
 		Vector operator-(const Point &p2) const;
 		Point operator+(const Vector &v) const;
+		Point operator-(const Vector &v) const;
 		cv::Point to_cv_point();
 	};
 
@@ -72,6 +73,14 @@ namespace Geometry {
 	Point from_cv_point(cv::Point cv_point);
 	Point from_cv_point(double x, double y);
 	double wrap(double theta);
+
+	struct Rectangle {
+		std::array<Point, 4> points;
+
+		static Rectangle from_robot(Point p, Vector to_front, double offset);
+		bool intersect(const Rectangle& b);
+	};
+
 }
 
 #endif //VSSS_GEOMETRY_H

@@ -34,7 +34,7 @@ class Robot2 {
 	public:
 		Geometry::Point uvf_ref;
 
-    	const double SIZE = 0.08;
+		static constexpr double SIZE = 0.08;
 		char ID = 'A';
 		unsigned int tag = 0;
 		double default_target_velocity = 0.8; // Velocidade padrão do robô
