@@ -12,6 +12,7 @@ void Robot2::go_to_pose(Geometry::Point point, Geometry::Vector direction, doubl
 	target.position = point;
 	uvf_ref = point + direction.with_size(0.1);
 	target.orientation = direction.theta;
+	auto p = Geometry::distance(point, get_position());
 	target.velocity = velocity;
 }
 

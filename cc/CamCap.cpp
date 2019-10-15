@@ -103,6 +103,7 @@ bool CamCap::capture_and_show() {
 	}
 
 	std::map<unsigned int, Vision::RecognizedTag> tags = interface.visionGUI.vision->run(imageView);
+	auto adv = interface.visionGUI.vision->advRobots;
 
 	interface.visionGUI.recorder.run(imageView);
 

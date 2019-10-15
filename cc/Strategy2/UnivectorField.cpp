@@ -2,11 +2,10 @@
 
 using namespace Geometry;
 using namespace field;
-using namespace Robot;
 
 void UnivectorField::updateConstants(const UnivectorField::UVF_params params) {
 	UVF_params = params;
-	//avoidField.updateParam(self.k0)
+//	avoidField.updateParam(self.k0);
 	//moveField.updateParams(self.kr, self.radius)
 }
 

@@ -55,6 +55,8 @@ namespace vision
 			bool isFound = false;
 		};
 
+			std::vector<cv::Point> advRobots;
+
 	private:
 
 		// image size
@@ -67,7 +69,6 @@ namespace vision
 		cv::Mat splitFrame;
 
 		// Robots
-		std::vector<cv::Point> advRobots;
 
 		// Ball
 		Ball ball;

@@ -2,6 +2,7 @@
 #define VSSS_ROBOT_H
 
 #include "Geometry/Geometry.h"
+#include "UnivectorField.h"
 
 class Robot2 {
 	public:
@@ -40,6 +41,7 @@ class Robot2 {
 		double default_target_velocity = 0.8; // Velocidade padrão do robô
 		const double TARGET_OFFSET = 0.03; // tolerância para saber se o robô chegou no ponto
 		const double BALL_OFFSET = 0.08; // tolerância para saber se a bola está próxima ao robô
+		UnivectorField uvf;
 
 		/**	Robô vai para um ponto e continua se movendo com mesma velocidade"
 		 *	@param point Ponto em que o robô deve passar
