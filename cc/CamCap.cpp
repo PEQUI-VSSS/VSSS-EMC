@@ -103,7 +103,13 @@ bool CamCap::capture_and_show() {
 	}
 
 	std::map<unsigned int, Vision::RecognizedTag> tags = interface.visionGUI.vision->run(imageView);
-	auto adv = interface.visionGUI.vision->advRobots;
+	auto new_advs = interface.visionGUI.vision->advRobots;
+	auto& advs = strategy.adversaries;
+	advs.resize(new_advs.size());
+
+	for (int i = 0; i < new_advs.size(); i++) {
+		advs[i].update(Geometry::from_cv_point(new_advs[i]), 1/30.0);
+	}
 
 	interface.visionGUI.recorder.run(imageView);
 

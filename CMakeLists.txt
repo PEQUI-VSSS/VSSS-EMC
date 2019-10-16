@@ -62,7 +62,7 @@ set(SOURCE_FILES cc/main.cpp
     pack-capture-gui/capture-gui/ImageWarp.cpp
     cc/TestOnClick.cpp
     cc/VideoRecorder.cpp
-    cc/Strategy2/UnivectorField.cpp)
+    cc/Strategy2/UnivectorField.cpp cc/Strategy2/Adversary.hpp)
 
 #Define diretorios com .h e .hpp. Novos diretorios devem ser inclusos aqui
 include_directories(cc/

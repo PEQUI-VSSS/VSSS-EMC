@@ -12,6 +12,11 @@ namespace Geometry {
 		double size;
 		double theta;
 
+		friend std::ostream& operator<<(std::ostream& os, const Vector& v) {
+			os << "{ " << v.size << ", " << v.theta << " }";
+			return os;
+		}
+
 		Vector(const double size, const double theta) : size(size), theta(theta) {}
 		explicit Vector(const Point &p);
 		Vector operator*(double value);

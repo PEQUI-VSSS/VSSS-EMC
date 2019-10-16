@@ -6,6 +6,7 @@
 #include "Strategy2/Defender.hpp"
 #include "Strategy2/Goalkeeper.hpp"
 #include "Strategy2/Field.h"
+#include "Adversary.hpp"
 #include <chrono>
 
 class Strategy2 {
@@ -34,6 +35,8 @@ class Strategy2 {
 		void execute_defender();
 
 	public:
+		std::vector<Adversary> adversaries;
+
 		Strategy2(Attacker &attacker, Defender &defender, Goalkeeper &goalkeeper, Geometry::Point &ball,
 				  Geometry::Point &ball_est);
 		void run();

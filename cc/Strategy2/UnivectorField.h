@@ -1,12 +1,10 @@
 #ifndef VSSS_UNIVECTOR_FIELD_H
 #define VSSS_UNIVECTOR_FIELD_H
 
-#include "boost/variant.hpp"
-#include "Robot2.h"
 #include "Geometry/Geometry.h"
 #include "Field.h"
 
-class UnivectorField : public Robot2 {
+class UnivectorField {
 	public:
 
 		struct UVF_params {	// Parametros utilizados no UVF
