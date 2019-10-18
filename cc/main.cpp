@@ -14,8 +14,8 @@ int main(int argc, char **argv) {
 
 	window.set_title("Pequi Mecânico - VSSS EMC");
 
-	auto screen_width = Gdk::screen_width();
-	bool isLowRes = screen_width <= 1600;
+	auto screen_height = Gdk::screen_height();
+	bool isLowRes = screen_height <= 1600;
 
 	CamCap camcap(isLowRes);
 	window.add(camcap);

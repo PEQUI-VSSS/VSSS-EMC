@@ -18,7 +18,6 @@ void Attacker::decide_spin_shot(const Geometry::Point &ball) {
 
 void Attacker::uvf_to_goal(const Geometry::Point &ball) {
 	Vector ball_to_goal = their::goal::back::center - ball;
-avoi
 	if(distance(ball, get_position()) > 0.03){
 		go_to_pose(ball, ball_to_goal);
 	}else{

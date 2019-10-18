@@ -31,6 +31,7 @@ class Robot2 {
 		Pose target = { {0, 0}, 0, 0, 0.0 }; //	Objetivo do robô. Uso de variáveis depende do comando utilizado
 		Command command = Command::None; // Tipo de comando que será enviado pelo Messenger
 		UVF_params uvf_data = { 1, 0.1 }; // Parâmetros utilizados no UVF
+		Geometry::Vector velocity_vector{0,0};
 
 	public:
 		Geometry::Point uvf_ref;

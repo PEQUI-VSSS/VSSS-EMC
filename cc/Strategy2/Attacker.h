@@ -8,9 +8,6 @@
 
 class Attacker : public Robot2 {
 	public:
-
-		std::vector<Adversary> *adversaries;
-
 		/**	Robô vai para a bola usando o UVF
 		 *	@param ball posição da bola
 		 *	robô se move com velocidade "default_target_velocity" */

@@ -1,10 +1,11 @@
 #include "Robot2.h"
+#include "Strategy2.hpp"
 
 using namespace Geometry;
 
-constexpr float K0 = 0.12;
-constexpr float dmin = 0.15;
-constexpr float delta = 4.5;
+constexpr double K0 = 0.08;
+constexpr double dmin = 0.10;
+constexpr double delta = 0.15;
 
 Vector shifting_vector(Vector obs_vel, Vector robot_vel) {
 	return (obs_vel - robot_vel) * K0;
@@ -16,19 +17,19 @@ Point virtual_obs(Point obs, Vector obs_vel, Point robot, Vector vel_robot) {
 	if (d >= s.size) {
 		return obs + s;
 	} else {
-		return obs + s * (d / s.size);
+		return obs + (s * (d / s.size));
 	}
 }
 
 double avoidance_field(Point obs, Vector obs_vel, Point robot, Vector vel_robot) {
-	auto virtual_obs = virtual_obs(obs, obs_vel, robot, vel_robot);
-	return (robot - virtual_obs).theta;
+	auto virtual_obs_pos = virtual_obs(obs, obs_vel, robot, vel_robot);
+	return (robot - virtual_obs_pos).theta;
 }
 
 double apply_avoidance_field(double target_theta, Point obs, Vector obs_vel, Point robot, Vector vel_robot) {
 	auto fi = avoidance_field(obs, obs_vel, robot, vel_robot);
 	auto R = (obs - robot).size;
-	auto gaussian = std::exp(std::pow(R - dmin, 2)/(2*std::pow(delta, 2)));
+	auto gaussian = std::exp(-std::pow(R - dmin, 2)/(2*std::pow(delta, 2)));
 	if (R <= dmin) {
 		return fi;
 	} else {
@@ -41,6 +42,10 @@ void Robot2::go_to(Geometry::Point point, double velocity) {
 	Geometry::Vector direction = point - pose.position;
 	target.orientation = direction.theta;
 	target.velocity = velocity;
+	for (Adversary adv : *adversaries){
+		auto offset = apply_avoidance_field(target.orientation, adv.position, adv.velocity, pose.position, velocity_vector);
+		target.orientation = wrap(offset);
+	}
 }
 
 void Robot2::go_to_pose(Geometry::Point point, Geometry::Vector direction, double velocity) {
@@ -97,8 +102,12 @@ void Robot2::go_in_direction(Geometry::Vector vector) {
 }
 
 void Robot2::set_pose(cv::Point position, double orientation) {
-	pose.position = Geometry::from_cv_point(position);
+	auto new_position = Geometry::from_cv_point(position);
+	auto direction = new_position - pose.position;
+	pose.position = new_position;
+	pose.velocity = direction.size/(1/30.0);
 	pose.orientation = -orientation;
+	velocity_vector = Vector{pose.velocity, direction.theta};
 }
 
 void Robot2::set_pose(const Pose &new_pose) {

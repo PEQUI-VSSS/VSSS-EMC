@@ -11,7 +11,6 @@ class Defender : public Robot2 {
 		std::string get_role_name() override { return "Defender"; };
 
 	public:
-		std::vector<Adversary> *adversaries;
 		// Behaviors
 		void protect_goal(const Geometry::Point &ball);
 		void wait_at_target(Geometry::Point target, Geometry::Point &ball);
