@@ -68,3 +68,10 @@ Vector Vector::with_size(double new_size) {
 Vector Vector::operator*(double value) {
 	return {size * value, theta};
 }
+
+Vector Vector::operator-(const Vector &v2) {
+	auto p1 = Point{0,0} + *this;
+	auto p2 = Point{0,0} + v2;
+	auto sum = Point{p1.x + p2.x, p1.y + p2.y};
+	return Vector(sum);
+}

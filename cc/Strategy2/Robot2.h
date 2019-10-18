@@ -2,7 +2,7 @@
 #define VSSS_ROBOT_H
 
 #include "Geometry/Geometry.h"
-//#include "UnivectorField.h"
+#include "Strategy2/Adversary.hpp"
 
 class Robot2 {
 	public:
@@ -34,7 +34,7 @@ class Robot2 {
 
 	public:
 		Geometry::Point uvf_ref;
-
+		std::vector<Adversary> *adversaries;
     	const double SIZE = 0.08;
 		char ID = 'A';
 		unsigned int tag = 0;

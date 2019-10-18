@@ -17,6 +17,7 @@ namespace Geometry {
 			return os;
 		}
 
+		Vector operator-(const Vector& v2);
 		Vector(const double size, const double theta) : size(size), theta(theta) {}
 		explicit Vector(const Point &p);
 		Vector operator*(double value);

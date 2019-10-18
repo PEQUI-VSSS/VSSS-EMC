@@ -10,6 +10,9 @@ Strategy2::Strategy2(Attacker &attacker, Defender &defender, Goalkeeper& goalkee
 		goalkeeper(goalkeeper),
 		ball(ball),
 		ball_est(ball_est) {
+	attacker.adversaries = &adversaries;
+	defender.adversaries = &adversaries;
+	goalkeeper.adversaries = &adversaries;
 }
 
 void Strategy2::run() {

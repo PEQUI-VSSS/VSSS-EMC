@@ -14,6 +14,7 @@ class Goalkeeper : public Robot2 {
 		std::string get_role_name() override { return "Goalkeeper"; };
 
 	public:
+		std::vector<Adversary> *adversaries;
 		// Beahviors
 		void protect_goal(const Geometry::Point& ball, const Geometry::Point& ball_est);
 		void spin_shot(const Geometry::Point& ball);

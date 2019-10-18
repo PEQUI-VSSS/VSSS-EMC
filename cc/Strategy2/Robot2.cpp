@@ -1,5 +1,41 @@
 #include "Robot2.h"
 
+using namespace Geometry;
+
+constexpr float K0 = 0.12;
+constexpr float dmin = 0.15;
+constexpr float delta = 4.5;
+
+Vector shifting_vector(Vector obs_vel, Vector robot_vel) {
+	return (obs_vel - robot_vel) * K0;
+}
+
+Point virtual_obs(Point obs, Vector obs_vel, Point robot, Vector vel_robot) {
+	auto s = shifting_vector(obs_vel, vel_robot);
+	auto d = (obs - robot).size;
+	if (d >= s.size) {
+		return obs + s;
+	} else {
+		return obs + s * (d / s.size);
+	}
+}
+
+double avoidance_field(Point obs, Vector obs_vel, Point robot, Vector vel_robot) {
+	auto virtual_obs = virtual_obs(obs, obs_vel, robot, vel_robot);
+	return (robot - virtual_obs).theta;
+}
+
+double apply_avoidance_field(double target_theta, Point obs, Vector obs_vel, Point robot, Vector vel_robot) {
+	auto fi = avoidance_field(obs, obs_vel, robot, vel_robot);
+	auto R = (obs - robot).size;
+	auto gaussian = std::exp(std::pow(R - dmin, 2)/(2*std::pow(delta, 2)));
+	if (R <= dmin) {
+		return fi;
+	} else {
+		return fi * gaussian + target_theta * (1 - gaussian);
+	}
+}
+
 void Robot2::go_to(Geometry::Point point, double velocity) {
 	command = Command::Vector;
 	Geometry::Vector direction = point - pose.position;

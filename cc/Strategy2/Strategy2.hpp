@@ -10,6 +10,10 @@
 #include <chrono>
 
 class Strategy2 {
+	public:
+		std::vector<Adversary> adversaries;
+
+
 	private:
 		using sc = std::chrono::system_clock;
 		using duration_ms = std::chrono::duration<double, std::milli>;
@@ -35,7 +39,6 @@ class Strategy2 {
 		void execute_defender();
 
 	public:
-		std::vector<Adversary> adversaries;
 
 		Strategy2(Attacker &attacker, Defender &defender, Goalkeeper &goalkeeper, Geometry::Point &ball,
 				  Geometry::Point &ball_est);
