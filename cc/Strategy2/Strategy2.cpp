@@ -13,12 +13,12 @@ Strategy2::Strategy2(Attacker &attacker, Defender &defender, Goalkeeper& goalkee
 }
 
 void Strategy2::run() {
-	duration_ms since_last_transition = sc::now() - last_transition;
-	if(since_last_transition.count() > 2000) {
-		bool transitioned = transitions();
-		if(transitioned)
-			last_transition = sc::now();
-	}
+//	duration_ms since_last_transition = sc::now() - last_transition;
+//	if(since_last_transition.count() > 2000) {
+//		bool transitioned = transitions();
+//		if(transitioned)
+//			last_transition = sc::now();
+//	}
 
 	execute_goalkeeper();
 	execute_defender();

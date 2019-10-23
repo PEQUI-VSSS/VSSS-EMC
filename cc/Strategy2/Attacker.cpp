@@ -51,7 +51,7 @@ void Attacker::uvf_to_goal(const Geometry::Point &ball, const Geometry::Point &b
 
 	switch (uvf_state) {
 		case seek_ball:
-			if (error_smaller_than(35) && get_position().x < target.x && robot_to_ball.size < 0.15)
+			if (error_smaller_than(30) && get_position().x < target.x && robot_to_ball.size < 0.15)
 				uvf_state = close_to_ball;
 			break;
 		case close_to_ball:

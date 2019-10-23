@@ -10,7 +10,7 @@ void Robot2::go_to(Geometry::Point point, double velocity) {
 void Robot2::go_to_pose(Geometry::Point point, Geometry::Vector direction, double velocity) {
 	command = Command::UVF;
 	target.position = point;
-	uvf_ref = point + direction.with_size(0.12);
+	uvf_ref = point + direction.with_size(0.10);
 	target.orientation = direction.theta;
 	target.velocity = velocity;
 }
