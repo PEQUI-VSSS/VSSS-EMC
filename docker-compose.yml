@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  vsss-emc:
+    image: pequimecanico/vsss-emc
+    volumes:
+      - /dev:/dev
+      - /tmp/.X11-unix:/tmp/.X11-unix
+    environment: 
+      - DISPLAY=unix$DISPLAY
+    privileged: true
